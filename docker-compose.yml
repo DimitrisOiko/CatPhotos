@@ -1,0 +1,27 @@
+services:
+  catphotos-api:
+    image: dimitrisoiko/cat-photos-webapi:latest
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "5555:80"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=CatPhotosDB;User=sa;Password=StrongPassword!!;TrustServerCertificate=True;
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=StrongPassword!!
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+volumes:
+  mssql_data:

@@ -26,13 +26,13 @@ namespace WebApi.Managers
                     var catDetails = await _client.GetCatDetailsAsync(cat.Id);
                     var catImage = await DownloadImageAsBase64Async(cat.Url);
                     if (catDetails.Breeds is null)
-                        throw new Exception($"Could not retrieve breed for cat: {cat.Id}. Payload: {catDetails}");
+                        continue;
 
                     HashSet<string> uniqueCatTags = [];
                     foreach (var breed in catDetails.Breeds)
                     {
                         if (string.IsNullOrEmpty(breed.Temperament))
-                            throw new Exception($"Could not retrieve tags for cat: {cat.Id}. Payload: {catDetails}");
+                            continue;
 
                         foreach (var tag in breed.Temperament.Split(",").Select(tag => tag.Trim().ToLower()).ToList())
                             uniqueCatTags.Add(tag);
